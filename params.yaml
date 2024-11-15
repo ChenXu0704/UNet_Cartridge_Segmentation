@@ -6,3 +6,5 @@ image_aug:
   test_angles: [17, 61, 129, 253]
   test_shift: [[10, 20], [-23, -17], [-7, 23], [13, -29]]
   test_start_id: 0
+data_loader:
+  path: './data/'
