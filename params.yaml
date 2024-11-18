@@ -20,3 +20,4 @@ training:
 testing:
   is_testing: True
   model_path: './model/model_batch16_step30_gamma0.1_ep20_lr0.0001.pt'
+  test_id: 0
