@@ -1,0 +1,20 @@
+stages:
+  prepare_data:
+    cmd: python image_augment.py
+    deps: 
+      - ./image_augment.py
+      - ./data/input/
+    params:
+      - image_aug
+    outs:
+      - ./data/train.joblib
+      - ./data/test.joblib
+  training:
+    cmd: python training.py
+    deps:
+      - ./data/train.joblib
+      - ./data/test.joblib
+      - ./image_augment.py
+    params:
+      - training
+
