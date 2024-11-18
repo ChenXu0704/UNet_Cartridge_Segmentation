@@ -8,3 +8,15 @@ image_aug:
   test_start_id: 0
 data_loader:
   path: './data/'
+
+training:
+  is_training: False
+  batch_size: 16
+  train_val_ratio: 0.8
+  lr: 0.0001
+  step_size: 30
+  gamma: 0.1
+  epochs: 1
+testing:
+  is_testing: True
+  model_path: './model/model_batch16_step30_gamma0.1_ep20_lr0.0001.pt'
