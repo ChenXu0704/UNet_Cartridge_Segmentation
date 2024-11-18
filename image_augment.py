@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from omegaconf import OmegaConf
-import glob
+import glob, joblib
 
 config = OmegaConf.load('./params.yaml')
 # define a functino that rotate the image
@@ -75,6 +75,8 @@ def image_augmentatation(inpt_image, mask_image, data_path):
   # Rotate the image every {delta} degree 
   delta = config.image_aug.angle
   img_id = config.image_aug.train_start_id
+  train_pool = []
+  test_pool = []
   for angle in range(0, 360, delta):
     rotate_inpt = image_rotation(inpt_image, angle)
     cv2.imwrite(f'{data_path}train/i{img_id}.png', rotate_inpt)
@@ -83,6 +85,8 @@ def image_augmentatation(inpt_image, mask_image, data_path):
     rotate_labl = image_labelling(rotate_mask)
     np.save(f'{data_path}train/l{img_id}.npy', rotate_labl)
     img_id += 1
+    train_pool.append((rotate_inpt, rotate_mask, rotate_labl))
+  joblib.dump(train_pool, './data/train.joblib')
       
   # Flip the image horizontally and do the rotation
   flipped_horizontally_inpt = cv2.flip(inpt_image, 1)
@@ -95,7 +99,8 @@ def image_augmentatation(inpt_image, mask_image, data_path):
     rotate_labl = image_labelling(rotate_mask)
     np.save(f'{data_path}/train/l{img_id}.npy', rotate_labl)
     img_id += 1
-      
+    test_pool.append((rotate_inpt, rotate_mask, rotate_labl))
+  joblib.dump(test_pool, './data/test.joblib')
   #==================================================================    
   # Create test data: shift the image and rotate it
   angles = config.image_aug.test_angles
@@ -126,5 +131,5 @@ if __name__ == "__main__":
     image = cv2.resize(image, (256,256))
     mask = cv2.imread(f'{path}input/m{i}.png')
     mask = cv2.resize(mask, (256,256))
-    print("processing {i}th image...")
+    print(f"processing {i}th image augmentation...")
     image_augmentatation(image, mask, path)
